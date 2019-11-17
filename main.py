@@ -20,9 +20,12 @@ class Chrombigram(object):
         for x in self.chrombigram:
             self.chrombigram[x] = 0
 
-    def fill(self, fingerprint):
+    def fill_sets(self, fingerprint):
         for pc in fingerprint:
             self.chrombigram[pc] += 1
+
+    def fill_distribution(self, chroma):
+        for pc in
 
     def get_as_box_array(self):
         arr = list(self.chrombigram.values())
