@@ -1,8 +1,7 @@
 import itertools
 import numpy as np
+import matplotlib.pyplot as plt
 import music21
-from PIL import Image
-
 
 class Chrombigram(object):
     def __init__(self, segment=False):
@@ -25,6 +24,11 @@ class Chrombigram(object):
         for pc in fingerprint:
             self.chrombigram[pc] += 1
 
+    def get_as_box_array(self):
+        arr = list(self.chrombigram.values())
+        arr = np.array(arr).reshape(64, -1)
+        return arr
+
 
 def getpcs_music21(m21):
     allpcs = []
@@ -38,9 +42,10 @@ def getpcs_music21(m21):
 
 
 if __name__ == '__main__':
-    chrombigram = Chrombigram(True)
-    # bach = music21.corpus.parse('bach/bwv90')
-    # bachpcs = getpcs_music21(bach)
-    # chrombigram.fill(bachpcs)
-    print(chrombigram.chrombigram.values())
-
+    chrombigram = Chrombigram(segment=False)
+    bach = music21.converter.parse('pathetique.krn')
+    bachpcs = getpcs_music21(bach)
+    chrombigram.fill(bachpcs)
+    box = chrombigram.get_as_box_array()
+    plt.imshow(box, cmap='gray')
+    plt.show()
