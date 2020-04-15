@@ -1,7 +1,8 @@
-from chrombigram.chrombigram import Chrombigram
+from chrombigram.chrombigram import Chrombigram, ChrombigramCounter
 import music21
 
 import sys
+import pprint
 
 def getpcs_music21(m21):
     allpcs = []
@@ -16,5 +17,9 @@ def getpcs_music21(m21):
 if __name__ == '__main__':
     score = music21.converter.parse(sys.argv[1])
     scorepcs = getpcs_music21(score)
+    counter = ChrombigramCounter()
     for pc in scorepcs:
-        print(Chrombigram(pc), end=' ')
+        chrombi = Chrombigram(pc)
+        counter.append(chrombi)
+        # print(chrombi, end=' ')
+    pprint.pprint(counter.chrombigram_dict)

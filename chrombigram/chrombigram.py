@@ -27,3 +27,29 @@ class Chrombigram(object):
 
     def __str__(self):
         return self.chrombigram_str[self.pcset]
+
+    def __repr__(self):
+        return self.__str__()
+
+    def __index(self):
+        return list(self.chrombigram_str.keys()).index(self.pcset)
+
+    def __hash__(self):
+        return self.__index()
+
+    def __eq__(self, other):
+        if isinstance(other, Chrombigram):
+            return self.__index() == other.__index()
+        return NotImplemented
+
+
+class ChrombigramCounter(object):
+    def __init__(self):
+        self.clean()
+
+    def clean(self):
+        self.chrombigram_dict = {Chrombigram(k): 0 for k in chrombigram_sets}
+
+    def append(self, chrombi):
+        if type(chrombi) == Chrombigram:
+            self.chrombigram_dict[chrombi] += 1
