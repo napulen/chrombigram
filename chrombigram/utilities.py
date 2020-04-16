@@ -16,18 +16,21 @@ def getpcs_midi(filename):
     mid = mido.MidiFile(filename)
     slices = []
     slic = []
+    THRESHOLD = 0.0
+    t_elapsed = 0.0
     for msg in mid:
-        if hasattr(msg, 'time') and msg.time > 0.0:
-            if slic:
-                slices.append(slic)
-                slic = []
-        elif msg.type == 'note_on' and msg.velocity > 0:
-            # Add to the current slice
-            if slic:
-                slic.append(msg.note % 12)
-            # Start a new slice
-            else:
+        t_elapsed += msg.time if hasattr(msg, 'time') else 0.0
+        if msg.type == 'note_on' and msg.velocity > 0:
+            if t_elapsed > THRESHOLD:
+                # Create new slice
+                if slic:
+                    slices.append(slic)
                 slic = [msg.note % 12]
+                t_elapsed = 0.0
+            else:
+                # Append to current slice
+                slic.append(msg.note % 12)
+    # Add the last slice
     if slic:
         slices.append(slic)
     pcs = [frozenset(slic) for slic in slices]
