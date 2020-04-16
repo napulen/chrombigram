@@ -17,14 +17,16 @@ def getpcs_midi(filename):
     slices = []
     slic = []
     for msg in mid:
-        if msg.type == 'note_on' and msg.velocity > 0:
+        if hasattr(msg, 'time') and msg.time > 0.0:
+            if slic:
+                slices.append(slic)
+                slic = []
+        elif msg.type == 'note_on' and msg.velocity > 0:
             # Add to the current slice
-            if slic and msg.time == 0:
+            if slic:
                 slic.append(msg.note % 12)
             # Start a new slice
             else:
-                if slic:
-                    slices.append(slic)
                 slic = [msg.note % 12]
     if slic:
         slices.append(slic)
