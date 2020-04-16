@@ -1,25 +1,24 @@
 
 from chrombigram.precomputed import chrombigram_sets
 
-class Chrombigram(object):
-    chrombigram_str = {}
+def _generate_chrombigram_str():
+    d = {}
+    for chrombi in chrombigram_sets:
+        s = str(chrombi)
+        # Converting pitch classes 10 and 11 into single characters
+        s = s.replace('10', 'A').replace('11', 'B')
+        # Adding a letter to the empty set, just to identify rests in MusicXML/Humdrum
+        # (doesn't apply to MIDI files)
+        s = s.replace('()', 'X')
+        s = ''.join(pc for pc in s if pc in '0123456789ABX')
+        d[chrombi] = s
+    return d
 
-    @classmethod
-    def _compute_chrombigram_str(cls):
-        for chrombi in chrombigram_sets:
-            s = str(chrombi)
-            # Converting pitch classes 10 and 11 into single characters
-            s = s.replace('10', 'A').replace('11', 'B')
-            # Adding a letter to the empty set, just to identify rests in MusicXML/Humdrum
-            # (doesn't apply to MIDI files)
-            s = s.replace('()', 'X')
-            s = ''.join(pc for pc in s if pc in '0123456789ABX')
-            cls.chrombigram_str[chrombi] = s
+class Chrombigram(object):
+    chrombigram_str = _generate_chrombigram_str()
 
     @classmethod
     def from_string(cls, chrombi_str):
-        if not cls.chrombigram_str:
-            cls._compute_chrombigram_str()
         chrombigram_strings = list(cls.chrombigram_str.values())
         if chrombi_str not in chrombigram_strings:
             raise TypeError
@@ -29,8 +28,6 @@ class Chrombigram(object):
         return cls(pcset)
 
     def __init__(self, pcset):
-        if not self.chrombigram_str:
-            self._compute_chrombigram_str()
         pcset = frozenset(pcset)
         if pcset not in chrombigram_sets:
             raise TypeError
