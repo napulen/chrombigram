@@ -16,14 +16,25 @@ class Chrombigram(object):
             s = ''.join(pc for pc in s if pc in '0123456789ABX')
             cls.chrombigram_str[chrombi] = s
 
+    @classmethod
+    def from_string(cls, chrombi_str):
+        if not cls.chrombigram_str:
+            cls._compute_chrombigram_str()
+        chrombigram_strings = list(cls.chrombigram_str.values())
+        if chrombi_str not in chrombigram_strings:
+            raise TypeError
+        for pcset, s in cls.chrombigram_str.items():
+            if chrombi_str == s:
+                break
+        return cls(pcset)
+
     def __init__(self, pcset):
         if not self.chrombigram_str:
             self._compute_chrombigram_str()
         pcset = frozenset(pcset)
-        if pcset in self.chrombigram_str:
-            self.pcset = pcset
-        else:
-            self.pcset = frozenset({})
+        if pcset not in chrombigram_sets:
+            raise TypeError
+        self.pcset = pcset
 
     def __str__(self):
         return self.chrombigram_str[self.pcset]
